@@ -1,30 +1,55 @@
 const fileService = require("../services/fileService");
 
-const getAllFiles = (req, res) => {
-  const allFiles = fileService.getAllFiles();
-  res.send(`Get all files`);
+const getAllFiles = async (req, res) => {
+  const allFiles = await fileService.getAllFiles();
+  res.json(allFiles["Contents"]);
 };
-const getOneFile = (req, res) => {
-  const file = fileService.getOneFile(req.params.fileId);
-  res.send(`Get file ${req.params.fileId}`);
+const getOneFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  const file = await fileService.getOneFile(fileId);
+  res.json(file);
 };
-const createNewFile = (req, res) => {
-  const createFile = fileService.createNewFile(req.params.fileId);
-  res.send(`Get file ${req.params.fileId}`);
+const downloadOneFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  const fileStream = fileService.downloadOneFile(fileId);
+  fileStream.pipe(res);
 };
-const updateOneFile = (req, res) => {
-  const updatefile = fileService.updateOneFile(req.params.fileId);
-  res.send(`Update file ${req.params.fileId}`);
+const createNewFile = async (req, res) => {
+  const file = req.files;
+  const createFile = fileService.createNewFile(file);
+
+  res.json(createFile);
 };
-const deleteOneFile = (req, res) => {
-  fileService.deleteOneFile(req.params.fileId);
-  res.send(`Delete file ${req.params.fileId}`);
+const updateOneFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  const file = req.files;
+  await fileService.updateOneFile(fileId, file);
+
+  res.send(`Update file ${fileId}`);
+};
+const changeFileName = async (req, res) => {
+  const { fileId } = req.params;
+  const { name } = req.body;
+
+  await fileService.changeFileName(fileId, name);
+  res.send(`Name changed file ${fileId}`);
+};
+const deleteOneFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  await fileService.deleteOneFile(fileId);
+  res.send(`Delete file ${fileId}`);
 };
 
 module.exports = {
   getAllFiles,
   getOneFile,
+  downloadOneFile,
   createNewFile,
   updateOneFile,
+  changeFileName,
   deleteOneFile,
 };
