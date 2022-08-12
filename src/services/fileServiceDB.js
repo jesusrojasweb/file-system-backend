@@ -4,26 +4,32 @@ const getAllFiles = () => {
   const files = File.find({});
   return files;
 };
-const getOneFile = (key) => {
-  const file = File.findOne({ key });
+const getOneFile = (key, userId) => {
+  const file = File.findOne({ key, user: userId });
   return file;
 };
-const createNewFile = (file) => {
+const createNewFile = (file, identifyInfo) => {
   const fileData = {
-    ...file,
-    key: file.name,
+    name: identifyInfo.name,
+    type: file.mimetype,
+    key: identifyInfo.name,
+    user: identifyInfo.userId,
   };
 
   const newFile = new File(fileData);
   return newFile.save();
 };
 const updateOneFile = (key, data) => {
-  const fileUpdated = File.findOneAndUpdate({ key }, data, { new: true });
+  const { name, userId } = data;
+  const fileUpdated = File.findOneAndUpdate(
+    { key, user: userId },
+    { name },
+    { new: true }
+  );
   return fileUpdated;
 };
-const deleteOneFile = (key) => {
-  console.log(key);
-  const fileDeleted = File.findOneAndRemove({ key });
+const deleteOneFile = (key, user) => {
+  const fileDeleted = File.findOneAndRemove({ key, user });
   return fileDeleted;
 };
 

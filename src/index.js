@@ -2,6 +2,8 @@ const express = require("express");
 const connectDB = require("./config/mongo");
 const fileUpload = require("express-fileupload");
 const v1Files = require("./v1/routes/filesRoutes");
+const v1Users = require("./v1/routes/usersRoutes");
+const v1Login = require("./v1/routes/loginRoutes");
 const handleErrors = require("./middlewares/handleErrors");
 const notFound = require("./middlewares/notFound");
 
@@ -22,6 +24,8 @@ app.use(
 app.use(express.json());
 
 app.use("/api/v1/files", v1Files);
+app.use("/api/v1/users", v1Users);
+app.use("/api/v1/login", v1Login);
 
 app.use(notFound);
 app.use(handleErrors);

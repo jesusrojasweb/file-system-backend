@@ -1,32 +1,34 @@
 const { Schema, model } = require("mongoose");
 
-const filesSchema = new Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
+  },
+  email: {
+    type: String,
+    required: true,
     unique: true,
-    trim: true,
   },
-  type: {
+  passwordHash: {
     type: String,
     required: true,
   },
-  key: {
-    type: String,
-    required: true,
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
+  files: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "File",
+    },
+  ],
 });
 
-filesSchema.set("toJSON", {
+userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id;
     delete returnedObject._id;
     delete returnedObject.__v;
+    delete returnedObject.passwordHash;
   },
 });
 
-module.exports = model("File", filesSchema);
+module.exports = model("User", userSchema);

@@ -1,8 +1,9 @@
 const fileServiceDB = require("../services/fileServiceDB");
 
 const getAllFiles = (req, res, next) => {
+  const { userId } = req;
   fileServiceDB
-    .getAllFiles()
+    .getAllFiles(userId)
     .then((allFiles) => {
       res.json({ status: "OK", data: allFiles });
     })
@@ -11,8 +12,10 @@ const getAllFiles = (req, res, next) => {
 const getOneFile = (req, res, next) => {
   const { fileId } = req.params;
 
+  const { userId } = req;
+
   fileServiceDB
-    .getOneFile(fileId)
+    .getOneFile(fileId, userId)
     .then((file) => {
       res.json({ status: "OK", file });
     })
@@ -20,10 +23,12 @@ const getOneFile = (req, res, next) => {
 };
 const createNewFile = (req, res, next) => {
   const { file } = req.files;
-  const { fileData } = req;
+  const { fileData, userId } = req;
+
+  const identifyInfo = { name: fileData.name, userId };
 
   fileServiceDB
-    .createNewFile(file, fileData.name)
+    .createNewFile(file, identifyInfo)
     .then((fileCreated) => {
       res.status(201).send({ status: "OK", data: fileCreated });
     })
@@ -31,11 +36,14 @@ const createNewFile = (req, res, next) => {
 };
 const updateOneFile = (req, res, next) => {
   const { fileId } = req.params;
+  const { userId } = req;
   const { name } = req.body;
+
+  const identifyInfo = { name, userId };
 
   const file = req.files;
   fileServiceDB
-    .updateOneFile(fileId, { name })
+    .updateOneFile(fileId, identifyInfo)
     .then((file) => {
       res.status(201).json({ status: "OK", data: file });
     })
@@ -43,9 +51,10 @@ const updateOneFile = (req, res, next) => {
 };
 const deleteOneFile = (req, res, next) => {
   const { fileId } = req.params;
+  const { userId } = req;
 
   fileServiceDB
-    .deleteOneFile(fileId)
+    .deleteOneFile(fileId, userId)
     .then(() => {
       res.json({ status: "OK", msg: "File deleted" });
     })
