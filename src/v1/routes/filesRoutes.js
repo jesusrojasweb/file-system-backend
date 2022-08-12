@@ -1,14 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const fileController = require("../../controllers/fileController");
+const fileControllerS3 = require("../../controllers/fileControllerS3");
+const fileControllerDB = require("../../controllers/fileControllerDB");
+const setFileData = require("../../middlewares/setFileData");
 
 router
-  .get("/", fileController.getAllFiles)
-  .get("/:fileId", fileController.getOneFile)
-  .get("/:fileId/download", fileController.downloadOneFile)
-  .post("/", fileController.createNewFile)
-  .patch("/:fileId", fileController.updateOneFile)
-  .patch("/:fileId/name", fileController.changeFileName)
-  .delete("/:fileId", fileController.deleteOneFile);
+  .get("/", fileControllerDB.getAllFiles)
+  .get("/:fileId", fileControllerDB.getOneFile)
+  .get("/:fileId/download", fileControllerS3.downloadOneFile)
+  .post(
+    "/",
+    setFileData,
+    fileControllerS3.createNewFile,
+    fileControllerDB.createNewFile
+  )
+  .patch("/:fileId", fileControllerS3.updateOneFile)
+  .patch(
+    "/:fileId/name",
+    setFileData,
+    // fileControllerS3.changeFileName, remove comment if aws keys have delete permissions
+    fileControllerDB.updateOneFile
+  )
+  .delete(
+    "/:fileId",
+    // fileControllerS3.deleteOneFile, remove comment if aws keys have delete permissions
+    fileControllerDB.deleteOneFile
+  );
 
 module.exports = router;

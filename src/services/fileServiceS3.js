@@ -1,7 +1,5 @@
 const storage = require("../config/s3");
 const fs = require("fs");
-const path = require("path");
-const shortid = require("shortid");
 const modifyName = require("../helpers/modifyName");
 
 const bucketName = process.env.AWS_BUCKET;
@@ -28,10 +26,8 @@ const downloadOneFile = (key) => {
   };
   return storage.getObject(params).createReadStream();
 };
-const createNewFile = ({ file }) => {
+const createNewFile = (file, fileName) => {
   const stream = fs.createReadStream(file.tempFilePath);
-
-  const fileName = modifyName(file);
 
   const params = {
     Bucket: bucketName,
