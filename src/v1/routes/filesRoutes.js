@@ -18,7 +18,7 @@ router
   )
   .patch("/:fileId", userExtractor, fileControllerS3.updateOneFile)
   .patch(
-    "/:fileId/name",
+    "/name/:fileId/",
     userExtractor,
     setFileData,
     // fileControllerS3.changeFileName, remove comment if aws keys have delete permissions
