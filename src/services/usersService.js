@@ -1,20 +1,33 @@
 const bcrypt = require("bcrypt");
 const User = require("../database/User");
 
+const saltRounds = 10;
+
 const getAllUsers = (userId) => {
   const allUsers = User.find({ id: userId });
   return allUsers;
 };
 
-const getUser = (email = "", userId = "") => {
-  const user = User.findOne({ email, id: userId });
+const getUser = (email, userId) => {
+  let data = {};
+  if (email) {
+    data = {
+      email,
+    };
+  }
+  if (userId) {
+    data = {
+      ...data,
+      id: userId,
+    };
+  }
+  const user = User.findOne(data);
   return user;
 };
 
 const createUser = async (data) => {
   const { name, email, password } = data;
 
-  const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
   const user = new User({
@@ -26,4 +39,16 @@ const createUser = async (data) => {
   return user.save();
 };
 
-module.exports = { getAllUsers, getUser, createUser };
+const changePassowrd = async (id, password) => {
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  const user = User.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    { passwordHash }
+  );
+  return user;
+};
+
+module.exports = { getAllUsers, getUser, createUser, changePassowrd };

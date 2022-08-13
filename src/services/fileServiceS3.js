@@ -1,4 +1,4 @@
-const storage = require("../config/s3");
+const { storage } = require("../config/s3");
 const fs = require("fs");
 const modifyName = require("../helpers/modifyName");
 

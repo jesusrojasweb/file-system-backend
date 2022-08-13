@@ -25,7 +25,7 @@ app.use(express.json());
 
 app.use("/api/v1/files", v1Files);
 app.use("/api/v1/users", v1Users);
-app.use("/api/v1/login", v1Login);
+app.use("/api/v1/auth", v1Login);
 
 app.use(notFound);
 app.use(handleErrors);

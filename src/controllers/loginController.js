@@ -14,4 +14,24 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { login };
+const resetPasswordEmail = (req, res, next) => {
+  const { email } = req.body;
+  loginService
+    .resetPasswordEmail(email)
+    .then(() => {
+      res.json({ msg: "password reset link sent to your email account" });
+    })
+    .catch(next);
+};
+const resetPassword = (req, res, next) => {
+  const { userId, token } = req.params;
+  const { password } = req.body;
+  loginService
+    .resetPassword(userId, token, password)
+    .then(() => {
+      res.json({ msg: "password reset sucessfully." });
+    })
+    .catch(next);
+};
+
+module.exports = { login, resetPasswordEmail, resetPassword };
