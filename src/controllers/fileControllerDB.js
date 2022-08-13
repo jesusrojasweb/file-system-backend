@@ -1,4 +1,5 @@
 const fileServiceDB = require("../services/fileServiceDB");
+const path = require("path");
 
 const getAllFiles = (req, res, next) => {
   const { userId } = req;
@@ -22,10 +23,23 @@ const getOneFile = (req, res, next) => {
     .catch(next);
 };
 const createNewFile = (req, res, next) => {
-  const { file } = req.files;
+  let file = {};
+  if (req.files) {
+    file = req.files;
+  }
   const { fileData, userId } = req;
 
-  const identifyInfo = { name: fileData.name, userId };
+  let name = "";
+  if (fileData) {
+    name = fileData.name;
+  } else if (req.body.name) {
+    name = req.body.name;
+    const imageExtention = path.parse(name).ext;
+    const imageType = imageExtention.split(".")[1];
+    file.mimetype = `image/${imageType}`;
+  }
+
+  const identifyInfo = { name, userId };
 
   fileServiceDB
     .createNewFile(file, identifyInfo)

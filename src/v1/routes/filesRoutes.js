@@ -8,7 +8,7 @@ const userExtractor = require("../../middlewares/userExtractor");
 router
   .get("/", userExtractor, fileControllerDB.getAllFiles)
   .get("/:fileId", userExtractor, fileControllerDB.getOneFile)
-  .get("/:fileId/download", userExtractor, fileControllerS3.downloadOneFile)
+  .get("/download/:fileId/", userExtractor, fileControllerS3.downloadOneFile)
   .post(
     "/",
     userExtractor,

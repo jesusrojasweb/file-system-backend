@@ -16,12 +16,24 @@ const downloadOneFile = (req, res) => {
   const fileStream = fileServiceS3.downloadOneFile(fileId);
   fileStream.pipe(res);
 };
-const createNewFile = (req, res, next) => {
-  const { file } = req.files;
+const createNewFile = (imageData, req, res, next) => {
+  let file = [];
+  if (req.files) {
+    file = req.files;
+  }
   const { fileData } = req;
 
+  let name = "";
+
+  if (fileData) {
+    name = fileData.name;
+  } else if (imageData) {
+    name = imageData.imageName;
+    req.body.name = name;
+  }
+
   fileServiceS3
-    .createNewFile(file, fileData.name)
+    .createNewFile(file, name, imageData.buffer)
     .then(() => {
       next();
     })

@@ -26,8 +26,13 @@ const downloadOneFile = (key) => {
   };
   return storage.getObject(params).createReadStream();
 };
-const createNewFile = (file, fileName) => {
-  const stream = fs.createReadStream(file.tempFilePath);
+const createNewFile = (file, fileName, imageBuffer) => {
+  let stream;
+  if (!imageBuffer) {
+    stream = fs.createReadStream(file.tempFilePath);
+  } else {
+    stream = imageBuffer;
+  }
 
   const params = {
     Bucket: bucketName,
